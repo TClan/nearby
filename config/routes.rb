@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   scope 'api' do
     scope 'v1' do
-      resources :drivers, only: [:index, :update]
+      put 'drivers/:driver_id/location', to: 'drivers#location'
+      get 'drivers', to: 'drivers#index'
     end
   end
 end

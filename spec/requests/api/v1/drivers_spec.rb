@@ -1,14 +1,33 @@
 require 'rails_helper'
 
-describe "Drivers API" do
-  it 'sends a list of messages' do
+describe 'Drivers API V1' do
 
-    get '/api/v1/drivers'
+  describe '#get drivers' do
+    it 'get driver locations' do
 
-    expect(response).to be_success
+      get '/api/v1/drivers'
 
-    json = JSON.parse(response.body)
-
-    expect(json['result']).to eq(1)
+      expect(response).to be_success
+    end
   end
+
+  describe '#update drivers' do
+    it 'validates lat and long' do
+
+      put '/api/v1/drivers/1/location', {latitude: 91, longitude: -91, accuracy: 0.7}
+
+      expect(response).to have_http_status(422)
+      json_body = JSON.parse(response.body)
+      expect(json_body['errors']).to include("Latitude should be between +/- 90")
+      expect(json_body['errors']).to include("Longitude should be between +/- 90")
+    end
+
+    it 'validates driver range' do
+
+      put '/api/v1/drivers/50001/location', {latitude: 1, longitude: -1, accuracy: 0.7}
+
+      expect(response).to have_http_status(404)
+    end
+  end
+
 end
