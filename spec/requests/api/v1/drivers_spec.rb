@@ -3,23 +3,33 @@ require 'rails_helper'
 describe 'Drivers API V1' do
 
   describe '#get drivers' do
-    it 'get driver locations' do
+    it 'validates input range' do
+      get '/api/v1/drivers', {latitude: 91, longitude: -191}
 
-      get '/api/v1/drivers'
+      expect(response).to have_http_status(400)
+      json_body = JSON.parse(response.body)
+      expect(json_body['errors']).to include("Latitude should be between +/- 90")
+      expect(json_body['errors']).to include("Longitude should be between +/- 180")
+    end
+    it 'mandatory to provide lat and long' do
+      get '/api/v1/drivers', {}
 
-      expect(response).to be_success
+      expect(response).to have_http_status(400)
+      json_body = JSON.parse(response.body)
+      expect(json_body['errors']).to include("Latitude can't be blank")
+      expect(json_body['errors']).to include("Longitude can't be blank")
     end
   end
 
   describe '#update drivers' do
     it 'validates lat and long' do
 
-      put '/api/v1/drivers/1/location', {latitude: 91, longitude: -91, accuracy: 0.7}
+      put '/api/v1/drivers/1/location', {latitude: 91, longitude: -191, accuracy: 0.7}
 
       expect(response).to have_http_status(422)
       json_body = JSON.parse(response.body)
       expect(json_body['errors']).to include("Latitude should be between +/- 90")
-      expect(json_body['errors']).to include("Longitude should be between +/- 90")
+      expect(json_body['errors']).to include("Longitude should be between +/- 180")
     end
 
     it 'validates driver range' do
@@ -28,6 +38,30 @@ describe 'Drivers API V1' do
 
       expect(response).to have_http_status(404)
     end
+
+    context 'when driver location does not exist' do
+      it 'saves location' do
+        put '/api/v1/drivers/100/location', {latitude: 1.1, longitude: 2.2, accuracy: 0.7}
+        location = DriverLocation.find_by_driver_id(100)
+        expect(location).to be_present
+        expect(location.latlong.x).to eql(2.2)
+        expect(location.latlong.y).to eql(1.1)
+      end
+    end
+
+    context 'when driver location exists' do
+      let(:last_location) { DriverLocation.create!(driver_id: 100, latitude: 1.1, longitude: 2.2, accuracy: 0.7) }
+      it 'overwrites last location' do
+        put "/api/v1/drivers/#{last_location.driver_id}/location", {latitude: 1.2, longitude: 2.3, accuracy: 0.8}
+
+        updated_location = DriverLocation.find_by_driver_id(last_location.driver_id)
+        expect(updated_location).to be_present
+        expect(updated_location.accuracy).to eql(0.8)
+        expect(updated_location.latlong.x).to eql(2.3)
+        expect(updated_location.latlong.y).to eql(1.2)
+      end
+    end
+
   end
 
 end

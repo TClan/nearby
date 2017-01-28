@@ -31,4 +31,16 @@ RSpec.configure do |config|
   config.filter_run focus: true
   config.run_all_when_everything_filtered = true
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
+
+  config.use_transactional_fixtures = false
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.around(:each) do |t|
+    DatabaseCleaner.strategy = :transaction
+
+    DatabaseCleaner.cleaning { t.run }
+  end
+
 end

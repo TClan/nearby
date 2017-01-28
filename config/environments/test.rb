@@ -26,7 +26,6 @@ Rails.application.configure do
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
 
-
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 end
