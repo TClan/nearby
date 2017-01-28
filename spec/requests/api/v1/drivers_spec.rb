@@ -19,6 +19,22 @@ describe 'Drivers API V1' do
       expect(json_body['errors']).to include("Latitude can't be blank")
       expect(json_body['errors']).to include("Longitude can't be blank")
     end
+
+    context 'when locations exist' do
+      let!(:location_within_range) { DriverLocation.create!(driver_id: 100, latitude: 1.1, longitude: 2.2, accuracy: 0.7) }
+      let!(:location_out_of_range) { DriverLocation.create!(driver_id: 200, latitude: 10.1, longitude: 20.2, accuracy: 0.7) }
+      it 'fetches location that fall under specified limit' do
+        get '/api/v1/drivers', {latitude: 1.101, longitude: 2.201}
+
+        expect(response).to have_http_status(200)
+        json_body = JSON.parse(response.body)
+        first_result = json_body[0]
+        expect(first_result["id"]).to eql(100)
+        expect(first_result["longitude"]).to eql(2.2)
+        expect(first_result["latitude"]).to eql(1.1)
+        expect(first_result["distance"]).to eql(10)
+      end
+    end
   end
 
   describe '#update drivers' do

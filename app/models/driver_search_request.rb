@@ -1,6 +1,7 @@
 class DriverSearchRequest
   include ActiveModel::Validations
   attr_accessor :latitude, :longitude, :radius, :limit
+  DEFAULT_OPTIONS = {radius: 500, limit: 10}
 
   validates_presence_of :latitude, :longitude
   validates :latitude,
@@ -14,7 +15,7 @@ class DriverSearchRequest
 
 
   def initialize(attributes = {})
-    attributes.each do |name, value|
+    DEFAULT_OPTIONS.merge(attributes).each do |name, value|
       send("#{name}=", value)
     end
   end

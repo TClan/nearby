@@ -1,11 +1,17 @@
 class DriversController < ApplicationController
   before_action :validate_input, only: [:location]
   def index
-    @driver_search = DriverSearchRequest.new(search_params)
-    unless @driver_search.valid?
-      render json: {errors: @driver_search.errors.full_messages}, status: 400
+    driver_search_request = DriverSearchRequest.new(search_params)
+    unless driver_search_request.valid?
+      render json: {errors: driver_search_request.errors.full_messages}, status: 400
       return
     end
+    search_results = DriverLocation.within(driver_search_request)
+    # wanted to use jbuilder
+    formated_results = search_results.map do |dl|
+     {id: dl.driver_id, latitude: dl.latlong.y, longitude: dl.latlong.x, distance: 10}
+    end
+    render json: formated_results, status: :ok
   end
 
   def location

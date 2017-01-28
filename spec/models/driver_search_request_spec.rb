@@ -24,5 +24,10 @@ describe DriverSearchRequest do
     it { is_expected.to allow_value(1, 10, 50).for(:limit) }
     it { is_expected.not_to allow_value(101).for(:limit) }
   end
+
+  it 'uses default values for limit and radius when not specified' do
+    expect(subject.limit).to eql(10)
+    expect(subject.radius).to eql(500)
+  end
 end
 
