@@ -11,8 +11,9 @@ class DriverLocation < ActiveRecord::Base
 
   def self.within(dsr)
     where("ST_DWithin(driver_locations.latlong,
-      ST_GeographyFromText('SRID=4326;POINT(:lon :lat)'), :distance)", lon: dsr.longitude.to_f, lat: dsr.latitude.to_f, distance: dsr.radius
-      ).limit(dsr.limit)
+      ST_GeographyFromText('SRID=4326;POINT(:lon :lat)'), :distance)", lon: dsr.longitude.to_f, lat: dsr.latitude.to_f, distance: dsr.radius)
+    .order("ST_Distance(driver_locations.latlong, ST_GeographyFromText('SRID=4326;POINT(#{dsr.longitude.to_f} #{dsr.latitude.to_f})'))")
+    .limit(dsr.limit)
   end
 
   before_save :set_latlong

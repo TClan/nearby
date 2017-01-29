@@ -61,6 +61,6 @@ All examples were filtered out; ignoring {:focus=>true}
 ...............................
 
 Finished in 0.7011 seconds (files took 6.99 seconds to load)
-31 examples, 0 failures
+33 examples, 0 failures
 
 
