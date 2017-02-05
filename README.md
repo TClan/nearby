@@ -27,6 +27,14 @@ Give the time constraints, choose to use PostGIS solution provided by Postgres e
 1. Postgres 9.6.x with PostGIS extension
 2. Rails Server
 
+# Setup Instructions (mac with homebrew)
+
+1) Install Postgres with PostGIS extension 
+
+`brew update`
+
+`brew install postgresql postgis`
+
 # Setup Instructions (Ubuntu)
 
 1) Install Postgres with PostGIS extension 
@@ -36,6 +44,8 @@ Give the time constraints, choose to use PostGIS solution provided by Postgres e
 `sudo apt-get install -y postgresql postgresql-contrib`
 
 `sudo apt-get install postgis`
+
+# Below steps are common for both linux and mac
 
 2) Install libraries
 
@@ -54,14 +64,14 @@ Give the time constraints, choose to use PostGIS solution provided by Postgres e
  
  `bundle exec rspec`
  
- 
+ ```
  Run options: include {:focus=>true}
 
 All examples were filtered out; ignoring {:focus=>true}
 ...............................
 
 Finished in 0.7011 seconds (files took 6.99 seconds to load)
-31 examples, 0 failures
+33 examples, 0 failures
  
-
+```
 
