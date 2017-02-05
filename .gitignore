@@ -62,3 +62,6 @@ npm-debug.log
 
 # used only for local overides, so don't commit
 .env.local
+*.rbc
+capybara-*.html
+.rspec
