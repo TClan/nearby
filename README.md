@@ -9,11 +9,13 @@ Had choose to use RoR since I am familiar with the TDD, CI and CD ecosystem, but
 The following articles gave me the confidence that RoR can be tuned to match required performance, the article tunes a Rails server to handle 4k requests/sec (240,000/minute).
 http://www.ostinelli.net/how-to-build-a-rails-api-server-optimizing-the-framework/
 
-# Performance Test Results
+# Performance Test Results (worst case scenario)
 
 ```
 Puma production configuration, postgres in same mac
 ===================================================
+
+PUT location
 
 Concurrency Level:      5
 Time taken for tests:   1.981 seconds
@@ -28,6 +30,19 @@ Time per request:       1.981 [ms] (mean, across all concurrent requests)
 Transfer rate:          124.71 [Kbytes/sec] received
                         107.46 kb/s sent
                         232.17 kb/s total
+
+GET nearby folks
+
+Concurrency Level:      5
+Time taken for tests:   1.564 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      391000 bytes
+HTML transferred:       61000 bytes
+Requests per second:    639.52 [#/sec] (mean)
+Time per request:       7.818 [ms] (mean)
+Time per request:       1.564 [ms] (mean, across all concurrent requests)
+Transfer rate:          244.19 [Kbytes/sec] received
 
 ```
 
