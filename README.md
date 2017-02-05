@@ -9,6 +9,28 @@ Had choose to use RoR since I am familiar with the TDD, CI and CD ecosystem, but
 The following articles gave me the confidence that RoR can be tuned to match required performance, the article tunes a Rails server to handle 4k requests/sec (240,000/minute).
 http://www.ostinelli.net/how-to-build-a-rails-api-server-optimizing-the-framework/
 
+# Performance Test Results
+
+```
+Puma production configuration, postgres in same mac
+===================================================
+
+Concurrency Level:      5
+Time taken for tests:   1.981 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      253000 bytes
+Total body sent:        218000
+HTML transferred:       0 bytes
+Requests per second:    504.77 [#/sec] (mean)
+Time per request:       9.906 [ms] (mean)
+Time per request:       1.981 [ms] (mean, across all concurrent requests)
+Transfer rate:          124.71 [Kbytes/sec] received
+                        107.46 kb/s sent
+                        232.17 kb/s total
+
+```
+
 # High Level Approach
 
 Give the time constraints, choose to use PostGIS solution provided by Postgres extension to store Lat/Long co-ordinates of drivers and use the distance function to identify closest points.
