@@ -21,8 +21,11 @@ describe 'Drivers API V1' do
     end
 
     context 'when location exist' do
-      let!(:location_within_range_near) { DriverLocation.create!(driver_id: 100, latitude: 1.1, longitude: 2.2, accuracy: 0.7) }
-      let!(:location_out_of_range) { DriverLocation.create!(driver_id: 200, latitude: 10.1, longitude: 20.2, accuracy: 0.7) }
+      let!(:location_within_range_near) {
+        create(:driver_location, driver_id: 100, latitude: 1.1,
+          longitude: 2.2, accuracy: 0.7) }
+      let!(:location_out_of_range) { create(:driver_location, driver_id: 200, latitude: 10.1,
+          longitude: 20.2, accuracy: 0.7) }
       it 'fetches location that fall under specified limit' do
         get '/api/v1/drivers', {latitude: 1.101, longitude: 2.201}
 
@@ -36,7 +39,8 @@ describe 'Drivers API V1' do
       end
 
       context 'when multiple locations match search' do
-        let!(:location_within_range_nearest) { DriverLocation.create!(driver_id: 300, latitude: 1.101, longitude: 2.201, accuracy: 0.7) }
+        let!(:location_within_range_nearest) { create(:driver_location, driver_id: 300,
+         latitude: 1.101, longitude: 2.201, accuracy: 0.7) }
         it 'fetches location that fall under specified limit sorted by distance' do
           get '/api/v1/drivers', {latitude: 1.101, longitude: 2.201}
 
@@ -47,6 +51,24 @@ describe 'Drivers API V1' do
           expect(json_body[1]["id"]).to eql(100)
         end
       end
+
+      context 'when multiple drivers match search but only few have latest location' do
+        let!(:location_within_range_but_late) {
+          create(:driver_location, driver_id: 500,
+          latitude: 1.101, longitude: 2.201, accuracy: 0.7,
+          last_known_at: (Time.now - 20.minutes)) }
+
+        it 'fetches drivers whose location was sent recently' do
+          get '/api/v1/drivers', {latitude: 1.101, longitude: 2.201}
+
+          expect(response).to have_http_status(200)
+          json_body = JSON.parse(response.body)
+          expect(json_body.length).to eql(1)
+          expect(json_body[0]["id"]).to eql(100)
+        end
+      end
+
+
     end
   end
 

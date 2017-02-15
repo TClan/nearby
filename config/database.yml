@@ -6,3 +6,8 @@ development:
 test:
   adapter:  postgis
   database: tracking_test
+
+production:
+  adapter:  postgis
+  pool: 10
+  database: tracking_development

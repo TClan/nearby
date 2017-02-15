@@ -6,9 +6,10 @@ class DriversController < ApplicationController
       render json: {errors: driver_search_request.errors.full_messages}, status: 400
       return
     end
-    search_results = DriverLocation.within(driver_search_request)
+
+    filtered_results = DriverFilterChain.new.filter(DriverLocation, driver_search_request)
     # wanted to use jbuilder
-    formated_results = search_results.map do |dl|
+    formated_results = filtered_results.map do |dl|
      {id: dl.driver_id, latitude: dl.latlong.y, longitude: dl.latlong.x, distance: 10}
     end
     render json: formated_results, status: :ok
@@ -27,7 +28,7 @@ class DriversController < ApplicationController
   private
 
   def validate_input
-    @driver_location = DriverLocation.new(location_params)
+    @driver_location = DriverLocation.new(location_params.merge(last_known_at: Time.now))
     unless @driver_location.valid_driver?
       render json: {}, status: :not_found
       return

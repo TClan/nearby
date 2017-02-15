@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170128130934) do
+ActiveRecord::Schema.define(version: 20170215063512) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,10 +19,11 @@ ActiveRecord::Schema.define(version: 20170128130934) do
 
   create_table "driver_locations", force: :cascade do |t|
     t.integer   "driver_id"
-    t.geography "latlong",    limit: {:srid=>4326, :type=>"point", :geographic=>true}
+    t.geography "latlong",       limit: {:srid=>4326, :type=>"point", :geographic=>true}
     t.decimal   "accuracy"
     t.datetime  "created_at"
     t.datetime  "updated_at"
+    t.datetime  "last_known_at"
   end
 
   add_index "driver_locations", ["driver_id"], name: "index_driver_locations_on_driver_id", using: :btree

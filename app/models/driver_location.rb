@@ -9,13 +9,6 @@ class DriverLocation < ActiveRecord::Base
   validates :accuracy,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1, message: "should be between 0 to 1" }
 
-  def self.within(dsr)
-    where("ST_DWithin(driver_locations.latlong,
-      ST_GeographyFromText('SRID=4326;POINT(:lon :lat)'), :distance)", lon: dsr.longitude.to_f, lat: dsr.latitude.to_f, distance: dsr.radius)
-    .order("ST_Distance(driver_locations.latlong, ST_GeographyFromText('SRID=4326;POINT(#{dsr.longitude.to_f} #{dsr.latitude.to_f})'))")
-    .limit(dsr.limit)
-  end
-
   before_save :set_latlong
 
 
